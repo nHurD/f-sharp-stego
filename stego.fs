@@ -8,17 +8,17 @@ module fSharpStego
         open System.Text
 
         open System.Drawing
-        let getBit (bit:byte) (pos:int) :byte = 
+        let private getBit (bit:byte) (pos:int) :byte = 
             let truePos = 8 - pos
             ((bit &&& ( byte 1 <<< truePos)) >>> truePos)
 
-        let replaceBit (bit:byte) (pos:int) (value:byte) :byte =
+        let private replaceBit (bit:byte) (pos:int) (value:byte) :byte =
            let tmp = int value
            match tmp with
              | 1 -> bit ||| ( byte 1 <<< pos )
              | _ -> bit &&& ~~~( byte 1 <<< pos )
      
-        let rec setData (message:byte[]) (img:Bitmap) (msgIdx:int) (blockCtr:int) (imgCntr:int) =
+        let rec private setData (message:byte[]) (img:Bitmap) (msgIdx:int) (blockCtr:int) (imgCntr:int) =
            match msgIdx with
              | msgIdx when msgIdx < message.Length ->
                let imgX = imgCntr % img.Width
@@ -41,7 +41,7 @@ module fSharpStego
              | _ -> ()
 
         /// Build a byte and return it
-        let rec getData (dest:byte) (img:Bitmap) (blockCtr:int) (imgCntr:int) : byte =
+        let rec private getData (dest:byte) (img:Bitmap) (blockCtr:int) (imgCntr:int) : byte =
             match blockCtr with
               | blockCtr when blockCtr <= 8 -> 
                   let imgX = imgCntr % img.Width
